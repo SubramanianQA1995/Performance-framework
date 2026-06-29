@@ -6,7 +6,7 @@
 because it exercises **every capability** an enterprise framework must prove,
 while staying free and public:
 
-| Framework capability needed for ITS | What restful-booker provides |
+| Framework capability needed for the target application | What restful-booker provides |
 |---|---|
 | Authentication / token handling | `POST /auth` returns a token → demonstrates **correlation**. |
 | Full CRUD business flow | `POST/GET/PUT/DELETE /booking` → realistic create→read→update→delete journey. |
@@ -18,15 +18,15 @@ while staying free and public:
 | Health endpoint for smoke | `GET /ping` (201) → lightweight availability probe. |
 | Stable & free for CI | Public, no licensing, safe to hammer at low/moderate load. |
 
-Crucially, the structure mirrors a typical ITS-style API tier (auth → resource
+Crucially, the structure mirrors a typical enterprise-style API tier (auth → resource
 CRUD with protected mutations). Because **all endpoints, payloads, and load
-knobs are externalised** (properties + CSV + `${__P()}`), migrating to ITS means
+knobs are externalised** (properties + CSV + `${__P()}`), migrating to the target application means
 editing `config/*` and the request paths/payloads — **the framework skeleton,
 correlation pattern, assertions, reporting, CI/CD, and RedLine13 packaging stay
 identical.**
 
-> Migration note: replace `base_url` and the per-sampler paths/bodies with ITS
-> equivalents; if ITS uses bearer tokens, the `token` JSON extractor already
+> Migration note: replace `base_url` and the per-sampler paths/bodies with the target application
+> equivalents; if the target application uses bearer tokens, the `token` JSON extractor already
 > demonstrates the correlation — swap the `Authorization` header value to
 > `Bearer ${token}`.
 
@@ -36,7 +36,7 @@ identical.**
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                     ITS PERFORMANCE FRAMEWORK                          │
+│                         PERFORMANCE FRAMEWORK                          │
 ├──────────────────────────────────────────────────────────────────────┤
 │  CONFIGURATION LAYER                                                   │
 │   config/user.properties        → JMeter engine + reporting tuning     │

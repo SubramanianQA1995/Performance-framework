@@ -1,4 +1,4 @@
-# ITS — Enterprise Load & Performance Testing Framework
+# Enterprise Load & Performance Testing Framework
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Apache JMeter](https://img.shields.io/badge/Apache%20JMeter-5.6.3-D22128?logo=apachejmeter&logoColor=white)
@@ -6,9 +6,9 @@
 ![No Plugins](https://img.shields.io/badge/plugins-none-success)
 ![CI](https://github.com/SubramanianQA1995/Performance-framework/actions/workflows/perf-tests.yml/badge.svg)
 
-A reusable, enterprise-grade Apache JMeter framework for the **ITS** platform
+A reusable, enterprise-grade Apache JMeter framework for the **enterprise** platform
 modernization program. Built on the public **restful-booker** API for
-development, and designed so the sample API can be swapped for ITS application
+development, and designed so the sample API can be swapped for target application
 APIs/UI flows with **minimal change**. Distributed cloud execution via
 **RedLine13** on **AWS**, with **Jenkins / Azure DevOps / GitHub Actions** CI/CD.
 
@@ -30,7 +30,7 @@ APIs/UI flows with **minimal change**. Distributed cloud execution via
 9. [AWS Setup](#9-aws-setup)
 10. [CI/CD Setup](#10-cicd-setup)
 11. [Troubleshooting](#11-troubleshooting)
-12. [Migrating from restful-booker to ITS](#12-migrating-from-restful-booker-to-its)
+12. [Migrating from restful-booker to the target application](#12-migrating-from-restful-booker-to-the-target-application)
 
 ---
 
@@ -179,7 +179,7 @@ Every run emits a **JMeter HTML Dashboard** (`reports/<run-id>/index.html`) with
 - **Error %**
 - **Average response time**, plus **P90 / P95 / P99** (configured in
   `config/user.properties`)
-- **Apdex** (satisfied 500ms / tolerated 1500ms — tune to ITS SLAs)
+- **Apdex** (satisfied 500ms / tolerated 1500ms — tune to the target application SLAs)
 - Per-transaction tables (`TX_*` / `MOD_*`) and over-time graphs
 
 Regenerate a dashboard from any JTL:
@@ -237,19 +237,19 @@ messages. Common issues, fixes, heap tuning, and the JTL→HTML command are in
 
 ---
 
-## 12. Migrating from restful-booker to ITS
+## 12. Migrating from restful-booker to the target application
 
-The framework skeleton is intended to outlive the sample API. To target ITS:
+The framework skeleton is intended to outlive the sample API. To target your platform:
 
 1. **Endpoints/host** — set `base_url`, `protocol`, `port` in `config/env/*`.
-2. **Paths & payloads** — update the sampler paths and JSON bodies to ITS APIs
+2. **Paths & payloads** — update the sampler paths and JSON bodies to the target application APIs
    (keep the Transaction/Module structure).
 3. **Auth** — the `token` JSON extractor already demonstrates correlation. If
-   ITS uses bearer tokens, change the `Authorization` header to `Bearer
+   the target application uses bearer tokens, change the `Authorization` header to `Bearer
    ${token}`; if it uses Basic, it already works.
-4. **Test data** — replace `data/testdata.csv` columns with ITS data; expand
+4. **Test data** — replace `data/testdata.csv` columns with the target application data; expand
    rows for unique-user realism at scale.
-5. **Assertions/SLAs** — adjust `sla_*_ms` and response/JSON assertions to ITS
+5. **Assertions/SLAs** — adjust `sla_*_ms` and response/JSON assertions to the target application
    contracts.
 6. **UI flows (optional)** — for browser-level journeys, add HTTP samplers for
    the web tier following the same patterns; everything else (config, reporting,
@@ -257,4 +257,4 @@ The framework skeleton is intended to outlive the sample API. To target ITS:
 
 Because all of the above is data/config — not structural — the **reusable
 components, correlation pattern, reporting, CI/CD, and RedLine13 deployment stay
-identical** between the current platform and the modernized ITS platform.
+identical** between the current platform and the modernized platform.

@@ -1,10 +1,10 @@
 # =====================================================================
-# ITS Performance Framework - GitHub Actions Workflow
+# Performance Framework - GitHub Actions Workflow
 # ---------------------------------------------------------------------
 # Place at: .github/workflows/perf-tests.yml
 # Manual dispatch with inputs; Smoke gate -> Load profile -> artifacts.
 # =====================================================================
-name: ITS Performance Tests
+name: Performance Tests
 
 on:
   workflow_dispatch:

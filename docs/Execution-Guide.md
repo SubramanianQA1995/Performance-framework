@@ -63,7 +63,7 @@ jmeter -n -t jmx/SmokeTest.jmx \
    - Additional file: `data/testdata.csv`.
 4. **JMeter Properties box** — paste your environment + load profile, e.g.:
    ```
-   base_url=its-perf.internal.company.com
+   base_url=app-perf.internal.company.com
    protocol=https
    port=443
    users=500

@@ -61,7 +61,7 @@ launch/terminate generators:
 ```
 
 > Tighten further in production by constraining `Resource`/conditions to
-> specific regions, instance types, and a tag (e.g. `Project=ITS-Perf`). Rotate
+> specific regions, instance types, and a tag (e.g. `Project=Perf-Lab`). Rotate
 > the access key regularly and store it only in the RedLine13 account settings.
 
 Add the access key + secret under **RedLine13 → Account → AWS Settings**.
@@ -87,10 +87,10 @@ Add the access key + secret under **RedLine13 → Account → AWS Settings**.
 
 Two directions matter:
 
-**A. Generator → SUT (egress / SUT ingress).** The SUT (ITS) must accept
+**A. Generator → SUT (egress / SUT ingress).** The SUT must accept
 inbound traffic from the generators' public IPs on the app ports (443/80).
 - For public endpoints: usually already open.
-- For private/internal ITS: whitelist the generator Elastic IPs, or place
+- For private/internal the target application: whitelist the generator Elastic IPs, or place
   generators in a VPC/subnet peered to the SUT, or use a VPN. Coordinate with
   the network team **before** the test window.
 
@@ -100,7 +100,7 @@ management port and SSH (22) from RedLine13. Allow this in the IAM policy
 (above) so the SG can be created automatically.
 
 ```
-[RedLine13 Controller] --(mgmt/SSH 22)--> [Generator SG] --(443)--> [ITS SUT SG]
+[RedLine13 Controller] --(mgmt/SSH 22)--> [Generator SG] --(443)--> [SUT SG]
 ```
 
 > Restrict generator inbound SSH to RedLine13/your office CIDR, not 0.0.0.0/0.
@@ -122,7 +122,7 @@ subscription separately). Rough On-Demand estimates (us-east-1, Linux):
 Example: 50k-VU run = 25 × `c5.2xlarge` × 1 hr ≈ **~$8.50 of EC2** for the hour
 (prices vary by region/time; verify current pricing). Cost controls:
 - Terminate generators promptly; confirm zero running instances post-run.
-- Tag everything `Project=ITS-Perf` and set an AWS **Budget + alarm**.
+- Tag everything `Project=Perf-Lab` and set an AWS **Budget + alarm**.
 - Prefer fewer, larger generators over many tiny ones for big runs.
 - Use Spot for exploratory large runs.
 - Keep soak tests on the **smallest** instance count that sustains the target

@@ -46,7 +46,7 @@ $argList = @(
 $argList += @("-Jtestdata_file=$(Join-Path $root 'data\testdata.csv')")
 foreach ($k in $Props.Keys) { $argList += "-J$k=$($Props[$k])" }
 
-Write-Host "=== ITS Performance Run: $runId ===" -ForegroundColor Cyan
+Write-Host "=== Performance Run: $runId ===" -ForegroundColor Cyan
 Write-Host "Plan   : $jmx"
 Write-Host "Env    : $envFile"
 Write-Host "Results: $jtl"

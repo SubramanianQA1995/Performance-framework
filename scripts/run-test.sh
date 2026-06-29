@@ -31,7 +31,7 @@ mkdir -p "$RESULT_DIR"
 
 JMETER="${JMETER_HOME:+$JMETER_HOME/bin/}jmeter"
 
-echo "=== ITS Performance Run: ${RUN_ID} ==="
+echo "=== Performance Run: ${RUN_ID} ==="
 "$JMETER" -n \
   -t "$JMX" \
   -q "$ENV_FILE" \

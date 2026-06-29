@@ -1,5 +1,5 @@
 # =====================================================================
-# ITS Performance Framework - Azure DevOps Pipeline
+# Performance Framework - Azure DevOps Pipeline
 # ---------------------------------------------------------------------
 # Downloads JMeter, runs Smoke as a gate, then the selected load profile,
 # and publishes the JTL + HTML dashboard as pipeline artifacts.

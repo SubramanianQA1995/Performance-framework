@@ -65,10 +65,10 @@ $tgSoak = @(
 )
 
 $plans = @{
-  'LoadTest.jmx'   = @{ name='ITS - Load Test';      tgs=@($tgLoad) }
-  'StressTest.jmx' = @{ name='ITS - Stress Test';    tgs=$tgStress }
-  'SpikeTest.jmx'  = @{ name='ITS - Spike Test';     tgs=$tgSpike }
-  'SoakTest.jmx'   = @{ name='ITS - Soak Test';      tgs=$tgSoak }
+  'LoadTest.jmx'   = @{ name='API - Load Test';      tgs=@($tgLoad) }
+  'StressTest.jmx' = @{ name='API - Stress Test';    tgs=$tgStress }
+  'SpikeTest.jmx'  = @{ name='API - Spike Test';     tgs=$tgSpike }
+  'SoakTest.jmx'   = @{ name='API - Soak Test';      tgs=$tgSoak }
 }
 
 foreach ($file in $plans.Keys) {

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ITS - Soak Test">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="API - Soak Test">
       <stringProp name="TestPlan.comments">Smoke test: validates application health with minimal load (full CRUD once).</stringProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Global Variables">
         <collectionProp name="Arguments.arguments">

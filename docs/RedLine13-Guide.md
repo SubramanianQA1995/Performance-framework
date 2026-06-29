@@ -47,7 +47,7 @@ RedLine13's constraints:
                                           ▼
                           ┌──────────────────────────────┐
                           │   System Under Test (SUT)     │
-                          │  ITS: UI / API / Services      │
+                          │  App: UI / API / Services      │
                           └──────────────────────────────┘
 ```
 
@@ -108,7 +108,7 @@ RedLine13's constraints:
 ### JMeter Properties to paste in RedLine13 (example: 1000 VUs Load)
 
 ```
-base_url=its-perf.internal.company.com
+base_url=app-perf.internal.company.com
 protocol=https
 port=443
 auth_user=admin
@@ -133,7 +133,7 @@ Model a global customer base by spreading generators across regions. In
 RedLine13, add multiple generator groups, each pinned to a region:
 
 ```
-                         ITS SUT (single endpoint or GSLB)
+                         SUT (single endpoint or GSLB)
                                      ▲
         ┌───────────────┬────────────┼────────────┬───────────────┐
         │               │            │            │               │
