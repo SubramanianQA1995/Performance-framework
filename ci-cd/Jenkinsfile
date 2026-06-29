@@ -1,5 +1,5 @@
 // =====================================================================
-// ITS Performance Framework - Jenkins Declarative Pipeline
+// Performance Framework - Jenkins Declarative Pipeline
 // ---------------------------------------------------------------------
 // Stages: Checkout -> Smoke -> (gated) Load -> Report -> Publish
 // Smoke acts as a quality gate: Load only runs if Smoke passes.
