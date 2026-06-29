@@ -1,0 +1,83 @@
+# =====================================================================
+# ITS Performance Framework - Azure DevOps Pipeline
+# ---------------------------------------------------------------------
+# Downloads JMeter, runs Smoke as a gate, then the selected load profile,
+# and publishes the JTL + HTML dashboard as pipeline artifacts.
+# =====================================================================
+trigger: none            # run on-demand / scheduled, not on every commit
+
+parameters:
+  - name: environment
+    displayName: Target environment
+    type: string
+    default: qa
+    values: [dev, qa, uat, perf]
+  - name: testType
+    displayName: Load profile
+    type: string
+    default: Load
+    values: [Smoke, Load, Stress, Spike, Soak]
+  - name: users
+    type: string
+    default: '50'
+  - name: rampup
+    type: string
+    default: '60'
+  - name: duration
+    type: string
+    default: '600'
+
+variables:
+  JMETER_VERSION: '5.6.3'
+  JMETER_HOME: '$(Pipeline.Workspace)/apache-jmeter-$(JMETER_VERSION)'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Performance
+    jobs:
+      - job: RunJMeter
+        timeoutInMinutes: 120
+        steps:
+          - checkout: self
+
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '17'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+
+          - bash: |
+              set -e
+              cd "$(Pipeline.Workspace)"
+              curl -sSL "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-$(JMETER_VERSION).tgz" -o jmeter.tgz
+              tar -xzf jmeter.tgz
+              echo "JMeter installed at $(JMETER_HOME)"
+            displayName: 'Install Apache JMeter'
+
+          - bash: |
+              chmod +x scripts/run-test.sh
+              ./scripts/run-test.sh SmokeTest ${{ parameters.environment }}
+            displayName: 'Smoke Test (Quality Gate)'
+
+          - bash: |
+              ./scripts/run-test.sh ${{ parameters.testType }}Test ${{ parameters.environment }} \
+                -Jusers=${{ parameters.users }} \
+                -Jrampup=${{ parameters.rampup }} \
+                -Jduration=${{ parameters.duration }}
+            displayName: 'Load Profile - ${{ parameters.testType }}'
+
+          - task: PublishPipelineArtifact@1
+            condition: always()
+            inputs:
+              targetPath: 'results'
+              artifact: 'jtl-results'
+            displayName: 'Publish raw JTL results'
+
+          - task: PublishPipelineArtifact@1
+            condition: always()
+            inputs:
+              targetPath: 'reports'
+              artifact: 'html-dashboard'
+            displayName: 'Publish HTML dashboard'

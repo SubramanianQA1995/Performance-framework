@@ -1,0 +1,82 @@
+# =====================================================================
+# ITS Performance Framework - GitHub Actions Workflow
+# ---------------------------------------------------------------------
+# Place at: .github/workflows/perf-tests.yml
+# Manual dispatch with inputs; Smoke gate -> Load profile -> artifacts.
+# =====================================================================
+name: ITS Performance Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        options: [dev, qa, uat, perf]
+        default: qa
+      testType:
+        description: 'Load profile'
+        type: choice
+        options: [Smoke, Load, Stress, Spike, Soak]
+        default: Load
+      users:
+        description: 'Virtual users'
+        default: '50'
+      rampup:
+        description: 'Ramp-up seconds'
+        default: '60'
+      duration:
+        description: 'Steady-state seconds'
+        default: '600'
+  schedule:
+    - cron: '0 2 * * 1'        # nightly-ish: every Monday 02:00 UTC smoke+load
+
+env:
+  JMETER_VERSION: 5.6.3
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Apache JMeter
+        run: |
+          set -e
+          curl -sSL "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz" -o jmeter.tgz
+          tar -xzf jmeter.tgz
+          echo "JMETER_HOME=$PWD/apache-jmeter-${JMETER_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Smoke Test (Quality Gate)
+        run: |
+          chmod +x scripts/run-test.sh
+          ./scripts/run-test.sh SmokeTest "${{ github.event.inputs.environment || 'qa' }}"
+
+      - name: Load Profile
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          ./scripts/run-test.sh "${{ github.event.inputs.testType }}Test" "${{ github.event.inputs.environment }}" \
+            -Jusers=${{ github.event.inputs.users }} \
+            -Jrampup=${{ github.event.inputs.rampup }} \
+            -Jduration=${{ github.event.inputs.duration }}
+
+      - name: Upload JTL results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jtl-results
+          path: results/**
+
+      - name: Upload HTML dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-dashboard
+          path: reports/**

@@ -1,0 +1,76 @@
+// =====================================================================
+// ITS Performance Framework - Jenkins Declarative Pipeline
+// ---------------------------------------------------------------------
+// Stages: Checkout -> Smoke -> (gated) Load -> Report -> Publish
+// Smoke acts as a quality gate: Load only runs if Smoke passes.
+// Requires: a JMeter installation on the agent (tool name 'JMeter' in
+// Global Tool Configuration), or JMETER_HOME set on the node.
+// =====================================================================
+pipeline {
+  agent any
+
+  parameters {
+    choice(name: 'ENVIRONMENT', choices: ['dev','qa','uat','perf'], description: 'Target environment')
+    choice(name: 'TEST_TYPE',  choices: ['Smoke','Load','Stress','Spike','Soak'], description: 'Load profile to run after smoke')
+    string(name: 'USERS',    defaultValue: '50',  description: 'Virtual users (load profile)')
+    string(name: 'RAMPUP',   defaultValue: '60',  description: 'Ramp-up seconds')
+    string(name: 'DURATION', defaultValue: '600', description: 'Steady-state seconds')
+  }
+
+  options {
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    timeout(time: 2, unit: 'HOURS')
+  }
+
+  environment {
+    JMETER_HOME = tool name: 'JMeter'
+    PATH = "${JMETER_HOME}/bin:${env.PATH}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+
+    stage('Smoke Test (Quality Gate)') {
+      steps {
+        sh '''
+          chmod +x scripts/run-test.sh
+          ./scripts/run-test.sh SmokeTest ${ENVIRONMENT}
+        '''
+      }
+    }
+
+    stage('Load Profile') {
+      steps {
+        sh '''
+          ./scripts/run-test.sh ${TEST_TYPE}Test ${ENVIRONMENT} \
+            -Jusers=${USERS} -Jrampup=${RAMPUP} -Jduration=${DURATION}
+        '''
+      }
+    }
+
+    stage('Publish Report') {
+      steps {
+        publishHTML(target: [
+          allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true,
+          reportDir: 'reports', reportFiles: '**/index.html',
+          reportName: 'JMeter HTML Dashboard'
+        ])
+      }
+    }
+  }
+
+  post {
+    always {
+      archiveArtifacts artifacts: 'results/**/*.jtl, results/**/*.log, reports/**', allowEmptyArchive: true
+      // Performance plugin trend graph (optional - install "Performance" plugin)
+      perfReport sourceDataFiles: 'results/**/results.jtl',
+                 errorFailedThreshold: 5, errorUnstableThreshold: 1
+    }
+    failure {
+      echo 'Performance pipeline FAILED - check the HTML dashboard and assertion failures.'
+    }
+  }
+}
