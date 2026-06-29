@@ -1,5 +1,11 @@
 # ITS — Enterprise Load & Performance Testing Framework
 
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Apache JMeter](https://img.shields.io/badge/Apache%20JMeter-5.6.3-D22128?logo=apachejmeter&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17%2B-007396?logo=openjdk&logoColor=white)
+![No Plugins](https://img.shields.io/badge/plugins-none-success)
+![CI](https://github.com/SubramanianQA1995/its-performance-framework/actions/workflows/perf-tests.yml/badge.svg)
+
 A reusable, enterprise-grade Apache JMeter framework for the **ITS** platform
 modernization program. Built on the public **restful-booker** API for
 development, and designed so the sample API can be swapped for ITS application
